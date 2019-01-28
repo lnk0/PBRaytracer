@@ -1,4 +1,4 @@
-#Build Folder
+# Build Folder
 
 This folder is your build folder
 Follow these steps to build and run the program :
