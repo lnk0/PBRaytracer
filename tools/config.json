@@ -2,5 +2,10 @@
     "dimension": {
         "width": 200,
         "height": 100
+    },
+    "background_color": {
+        "r": 255,
+        "g": 255,
+        "b": 255
     }
 }
