@@ -93,14 +93,32 @@ void World::fill_img(const std::string& file_name)
             Ray ray(origin, lower_left_corner + u * horizontal + v * vertical);
             Vec3 color = compute_color_of(ray);
 
-            img << color.r() << " " << color.g() << " " << color.b() << std::endl;
+            int r = int(color.r() * 255.99);
+            int g = int(color.g() * 255.99);
+            int b = int(color.b() * 255.99);
+            img << r << " " << g << " " << b << std::endl;
         }
     }
 
     img.close();
 }
 
+bool hit_sphere(const Vec3& center, float radius, const Ray& ray)
+{
+    Vec3 oc = ray.origin() - center;
+    float a = dot(ray.direction(), ray.direction());
+    float b = 2.0f * dot(oc, ray.direction());
+    float c = dot(oc, oc) - radius * radius;
+    float disc = b * b - 4 * a * c;
+    return disc > 0;
+}
+
 Vec3 World::compute_color_of(const Ray& ray)
 {
-    return m_background_color;
+    if (hit_sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5, ray))
+    {
+        return Vec3(1.0f, 0.0f, 0.0f);
+    }
+
+    return ranged_color(m_background_color);
 }

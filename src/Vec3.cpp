@@ -23,9 +23,18 @@ Vec3& Vec3::operator=(const Vec3& v0)
     return *this;
 }
 
-float Vec3::lenght() const
+inline float Vec3::lenght() const
 {
     return std::sqrt(m_elements[0] * m_elements[0] + m_elements[1] * m_elements[1] + m_elements[2] * m_elements[2]);
+}
+
+void Vec3::normalize()
+{
+    float k = 1.0 / sqrt(m_elements[0] * m_elements[0] + m_elements[1] * m_elements[1] + m_elements[2] * m_elements[2]);
+
+    m_elements[0] *= k;
+    m_elements[1] *= k;
+    m_elements[2] *= k;
 }
 
 Vec3 operator*(const Vec3& v0, const Vec3& v1)
@@ -73,7 +82,17 @@ Vec3 operator-(const Vec3& v0, float v1)
     return Vec3(v0.x() - v1, v0.y() - v1, v0.z() - v1);
 }
 
-Vec3 unit_vector(Vec3 v)
+Vec3 normalize(Vec3 v)
 {
     return v / v.lenght();
+}
+
+Vec3 ranged_color(Vec3 v)
+{
+    return v / 255;
+}
+
+float dot(const Vec3& v0, const Vec3& v1)
+{
+    return v0.x() * v1.x() + v0.y() * v1.y() + v0.z() * v1.z();
 }

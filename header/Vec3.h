@@ -24,7 +24,8 @@ public:
     inline float g() const { return m_elements[1]; }
     inline float b() const { return m_elements[2]; }
 
-    float lenght() const;
+    inline float lenght() const;
+    void normalize();
 };
 
     Vec3 operator*(const Vec3& v0, const Vec3& v1);
@@ -40,4 +41,6 @@ public:
     Vec3 operator-(const Vec3& v0, const Vec3& v1);
     Vec3 operator-(const Vec3& v0, float v1);
 
-    Vec3 unit_vector(Vec3 v);
+    Vec3 normalize(Vec3 v);
+    Vec3 ranged_color(Vec3 v);
+    float dot(const Vec3& v0, const Vec3& v1);
