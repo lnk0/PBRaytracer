@@ -1,8 +1,10 @@
 #pragma once
 
 #include "Ray.h"
+#include "GeometricObj.h"
 
 #include <string>
+#include <vector>
 
 class World
 {
@@ -14,6 +16,8 @@ private:
 
     Vec3 m_background_color;
 
+    std::vector<GeometricObj *> m_hitable_list;
+
 public:
     World(const std::string& config_file);
 
@@ -22,5 +26,6 @@ public:
 
 private:
     void fill_img(const std::string& file_name);
-    Vec3 compute_color_of(const Ray& ray);
+    Vec3 compute_pixel(const Ray& ray);
+    bool obj_is_hited(const Ray& ray, float t_min, float t_max, HitRecord& hit_record);
 };

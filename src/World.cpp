@@ -1,6 +1,7 @@
 #include "World.h"
 #include "Tools.h"
 #include "Vec3.h"
+#include "Sphere.h"
 
 #include <json.hpp>
 #include <fstream>
@@ -44,6 +45,33 @@ void World::build()
             }
 
             m_background_color = Vec3(r, g, b);
+        }
+        else if (item.key() == "entities")
+        {
+            for (auto& entity : item.value().items())
+            {
+                float x, y, z, radius;
+                for (auto& setting : entity.value().items())
+                {
+                    if (setting.key() == "position")
+                    {
+                        for (auto& coordinate : setting.value().items())
+                        {
+                            if (coordinate.key() == "x")
+                                x = coordinate.value();
+                            else if (coordinate.key() == "y")
+                                y = coordinate.value();
+                            else if (coordinate.key() == "z")
+                                z = coordinate.value();
+                        }
+                    }
+                    else if (setting.key() == "radius")
+                    {
+                        radius = setting.value();
+                    }
+                }
+                m_hitable_list.push_back(new Sphere(Vec3(x, y, z), radius));
+            }
         }
     }
 
@@ -91,7 +119,7 @@ void World::fill_img(const std::string& file_name)
             float v = float(row) / float(m_height);
 
             Ray ray(origin, lower_left_corner + u * horizontal + v * vertical);
-            Vec3 color = compute_color_of(ray);
+            Vec3 color = compute_pixel(ray);
 
             int r = int(color.r() * 255.99);
             int g = int(color.g() * 255.99);
@@ -103,22 +131,31 @@ void World::fill_img(const std::string& file_name)
     img.close();
 }
 
-bool hit_sphere(const Vec3& center, float radius, const Ray& ray)
+Vec3 World::compute_pixel(const Ray& ray)
 {
-    Vec3 oc = ray.origin() - center;
-    float a = dot(ray.direction(), ray.direction());
-    float b = 2.0f * dot(oc, ray.direction());
-    float c = dot(oc, oc) - radius * radius;
-    float disc = b * b - 4 * a * c;
-    return disc > 0;
+    HitRecord hit_record;
+    if (obj_is_hited(ray, 0.001f, MAXFLOAT, hit_record))
+    {
+        return 0.5f * Vec3(hit_record.normal.x() + 1, hit_record.normal.y() + 1, hit_record.normal.z() + 1);
+    }
+    return ranged_color(m_background_color);
 }
 
-Vec3 World::compute_color_of(const Ray& ray)
+bool World::obj_is_hited(const Ray& ray, float t_min, float t_max, HitRecord& hit_record)
 {
-    if (hit_sphere(Vec3(0.0f, 0.0f, -1.0f), 0.5, ray))
+    HitRecord tmp_record;
+    bool hit_anything = false;
+    double closest = t_max;
+
+    for (auto const& hitable : m_hitable_list)
     {
-        return Vec3(1.0f, 0.0f, 0.0f);
+        if (hitable->hit(ray, t_min, closest, tmp_record))
+        {
+            hit_anything = true;
+            closest = tmp_record.t;
+            hit_record = tmp_record;
+        }
     }
 
-    return ranged_color(m_background_color);
+    return hit_anything;
 }

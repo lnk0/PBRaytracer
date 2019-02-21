@@ -7,5 +7,25 @@
         "r": 255,
         "g": 255,
         "b": 255
-    }
+    },
+    "entities": [
+        {
+            "type": "sphere",
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -1.0
+            },
+            "radius": 0.5
+        },
+        {
+            "type": "sphere",
+            "position": {
+                "x": 0.0,
+                "y": -100.5,
+                "z": -1.0
+            },
+            "radius": 100
+        }
+    ]
 }

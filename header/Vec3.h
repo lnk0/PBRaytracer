@@ -8,6 +8,7 @@ private:
     float m_elements[3];
 
 public:
+    Vec3() {};
     Vec3(float v);
     Vec3(float v1, float v2, float v3);
     Vec3& operator=(const Vec3& v0);
